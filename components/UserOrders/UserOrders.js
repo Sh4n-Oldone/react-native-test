@@ -13,19 +13,19 @@ const UserOrders = ({orders}) => {
         <Text style={styles.header}>Мои заказы
           <Text style={styles.headerNums}> {orders.length}</Text>
         </Text>
-        {/* {orders.map(item => 
+        {orders.map(item => 
           <Order
             key={item.id}
             packageName={item.packageName}
             packageCalories={item.packageCalories}
             deliveries={item.deliveries}
           />
-          )} */}
-        <Order 
+          )}
+        {/* <Order 
           packageName={orders[0].packageName}
           packageCalories={orders[0].packageCalories}
           deliveries={orders[0].deliveries}
-        />
+        /> */}
       </ScrollView>
     </View>
   )
@@ -39,8 +39,7 @@ const styles = StyleSheet.create({
   },
   content: {
     width: '90%',
-    minHeight: '100%',
-    borderWidth: 2
+    minHeight: '100%'
   },
   header: {
     color: '#252525',

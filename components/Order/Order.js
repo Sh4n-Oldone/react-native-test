@@ -55,12 +55,14 @@ const Order = ({packageName, packageCalories, deliveries}) => {
   // сортировки
   const diffDate = (oldDate, freshDate) => {
     // Вернёт разницу между двумя датами
-    const utc1 = Date.UTC(oldDate.getFullYear(), oldDate.getMonth(), oldDate.getDate())
-    const utc2 = Date.UTC(freshDate.getFullYear(), freshDate.getMonth(), freshDate.getDate())
-    return Math.floor((utc2 - utc1) / (1000 * 60 * 60 * 24))
+    const utc1 = Date.UTC(freshDate.getFullYear(), freshDate.getMonth(), freshDate.getDate())
+    const utc2 = Date.UTC(oldDate.getFullYear(), oldDate.getMonth(), oldDate.getDate())
+    const result = Math.floor((utc2 - utc1) / (1000 * 60 * 60 * 24))
+    return result
   }
-  const getDaysBefore = (arr, date) => arr.filter(day => day - date < 0)
+  
   const getDaysAfter = (arr, date) => arr.filter(day => day - date > 0)
+  const getDaysBefore = (arr, date) => arr.filter(day => day - date < 0)
   const sortClosestDay = (arr, day) => arr.sort((a, b) => {
     // Вернёт масссив отсортированных дат
     const distancea = Math.abs(day - a)
@@ -70,27 +72,31 @@ const Order = ({packageName, packageCalories, deliveries}) => {
 
   // данные
   const today = new Date()
-  const daysToEnd = diffDate(new Date(deliveries[deliveries.length - 1].date), today)
-  daysToEnd.toString().charAt(daysToEnd.toString().length-1)
+  const daysToEnd = deliveries.length > 0 
+    ? diffDate(new Date(deliveries[deliveries.length - 1].date), today) >= 0 
+      ? diffDate(new Date(deliveries[deliveries.length - 1].date), today)
+      : 0
+    : 0
+
+  const daysAtStart = Math.abs(diffDate(new Date(deliveries[0].date), today))
+
   const deliveryDates = deliveries.map(item => new Date(item.date))
+  const deliveryDatesAfter = getDaysAfter(deliveryDates, today)
+  const deliveryDatesBefore = getDaysBefore(deliveryDates, today)
 
-  // ERROR
-  // Если нет следующего дня, то падает с ошибкой, ведь getDaysAfter вернёт пустой массив
-  // нет на сегодня больше идей =(
-
-  const nextDeliveryDay = sortClosestDay(getDaysAfter(deliveryDates, today), today)
-  const prevDeliveryDay = sortClosestDay(getDaysBefore(deliveryDates, today), today)
-  const nextDelivery = deliveries.find(item => item.date === nextDeliveryDay.toISOString().slice(0, 10))
-  const prevDelivery = deliveries.find(item => item.date === prevDeliveryDay.toISOString().slice(0, 10))
+  const nextDeliveryDay = !deliveryDatesAfter.length ? '' : sortClosestDay(deliveryDatesAfter, today)
+  const prevDeliveryDay = !deliveryDatesBefore.length ? '' : sortClosestDay(deliveryDatesBefore, today)
+  const nextDelivery = !deliveryDatesAfter.length ? '' : deliveries.find(item => item.date === nextDeliveryDay.toISOString().slice(0, 10))
+  const prevDelivery = !deliveryDatesBefore.length ? '' : deliveries.find(item => item.date === prevDeliveryDay.toISOString().slice(0, 10))
   const nextDeliveryProps = {
-    day: nextDeliveryDay.toLocaleString("ru", {day: 'numeric'}),
-    month: nextDeliveryDay.toLocaleString("ru", {month: 'short'}).slice(0, -1),
-    dayOfTheWeek: nextDeliveryDay.toLocaleString("ru", {weekday: 'long'})
+    day: !deliveryDatesAfter.length ? '' : nextDeliveryDay.toLocaleString("ru", {day: 'numeric'}),
+    month: !deliveryDatesAfter.length ? '' : nextDeliveryDay.toLocaleString("ru", {month: 'short'}),
+    dayOfTheWeek: !deliveryDatesAfter.length ? '' : nextDeliveryDay.toLocaleString("ru", {weekday: 'long'})
   }
   const prevDeliveryProps = {
-    day: prevDeliveryDay.toLocaleString("ru", {day: 'numeric'}),
-    month: prevDeliveryDay.toLocaleString("ru", {month: 'short'}).slice(0, -1),
-    dayOfTheWeek: prevDeliveryDay.toLocaleString("ru", {weekday: 'long'})
+    day: !deliveryDatesBefore.length ? '' : prevDeliveryDay.toLocaleString("ru", {day: 'numeric'}),
+    month: !deliveryDatesBefore.length ? '' : prevDeliveryDay.toLocaleString("ru", {month: 'short'}).slice(0, -1),
+    dayOfTheWeek: !deliveryDatesBefore.length ? '' : prevDeliveryDay.toLocaleString("ru", {weekday: 'long'})
   }  
 
   function renameDayOfTheWeek(day) {
@@ -108,24 +114,38 @@ const Order = ({packageName, packageCalories, deliveries}) => {
   return(
     <View style={styles.orderBlock}>
       <View>
-        <Text>{diffDate(new Date(deliveries[0].date), today)}</Text>
+        <Text>
+          {today < new Date(deliveries[deliveries.length-1].date)
+            ? ['1'].includes(daysAtStart.toString().charAt(daysAtStart.toString().length-1)) && daysAtStart !== 11
+              ? `${daysAtStart} день`
+              : ['2','3','4'].includes(daysAtStart.toString().charAt(daysAtStart.toString().length-1))
+                ? `${daysAtStart} дня`
+                : `${daysAtStart} дней`
+            : 'Окончен'
+          }
+        </Text>
         <View>
           <Text>{packageName}</Text>
           <Text>{packageCalories}</Text>
         </View>
       </View>
 
-      <ProgressBar step={1} steps={10} height={20}/>
+      {/* <ProgressBar step={1} steps={10} height={20}/> */}
 
       <View>
-        <Text>{new Date(deliveries[0].date).toLocaleString("ru", {day: 'numeric', month: 'short'}).slice(0, -1)}</Text>
-        <Text>{daysToEnd === 1 ? 'Остался ' : 'Осталось '}{daysToEnd}{['1','2','3','4'].includes(daysToEnd.toString().charAt(daysToEnd.toString().length-1)) && ![11,12,13,14].includes(daysToEnd)
+        <Text>
+          {new Date(deliveries[0].date).toLocaleString("ru", {day: 'numeric', month: 'short'}).slice(0, -1)}
+        </Text>
+        <Text>
+          {daysToEnd === 1 ? 'Остался ' : 'Осталось '}{daysToEnd}{['1','2','3','4'].includes(daysToEnd.toString().charAt(daysToEnd.toString().length-1)) && ![11,12,13,14].includes(daysToEnd)
           ? daysToEnd === 1 
             ? ' день'
             : ' дня'
           : ' дней'
         }</Text>
-        <Text>{new Date(deliveries[deliveries.length - 1].date).toLocaleString("ru", {day: 'numeric', month: 'short'}).slice(0, -1)}</Text>
+        <Text>
+          {new Date(deliveries[deliveries.length - 1].date).toLocaleString("ru", {day: 'numeric', month: 'short'})}
+        </Text>
       </View>
       <View>
         <View>
@@ -134,10 +154,14 @@ const Order = ({packageName, packageCalories, deliveries}) => {
         </View>
         <View>
           <Text>Ближайшая доставка
-            <Text>{nextDeliveryProps.dayOfTheWeek === 'вторник' 
-              ? 'во ' 
-              : 'в '}
-              {renameDayOfTheWeek(nextDeliveryProps.dayOfTheWeek)} –</Text>
+            <Text>
+              {
+                nextDeliveryProps.dayOfTheWeek === 'вторник' 
+                  ? ' во ' 
+                  : ' в '
+              }
+              {renameDayOfTheWeek(nextDeliveryProps.dayOfTheWeek)} –
+            </Text>
           </Text>
           <Text>{nextDelivery.interval}</Text>
           <Text>{nextDelivery.address}</Text>
@@ -149,9 +173,10 @@ const Order = ({packageName, packageCalories, deliveries}) => {
 
 const styles = StyleSheet.create({
   orderBlock: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#E3E3E3',
     borderRadius: 6,
-    width: '100%'
+    width: '100%',
+    marginBottom: 15
   }
 })
 

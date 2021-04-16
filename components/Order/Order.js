@@ -52,6 +52,10 @@ const ProgressBar = ({step, steps, height}) => {
 }
 
 const Order = ({packageName, packageCalories, deliveries}) => {
+  // Проблемы:
+  // Даты корректно выглядят только на iOS
+  // Пока не нашёл минималистичного решения для андроида =(
+
   // сортировки
   const diffDate = (oldDate, freshDate) => {
     // Вернёт разницу между двумя датами

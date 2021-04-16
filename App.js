@@ -1,17 +1,42 @@
-import { StatusBar } from 'expo-status-bar'
 import React from 'react'
+import { NavigationContainer } from '@react-navigation/native'
+import { createStackNavigator } from '@react-navigation/stack'
+import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, View } from 'react-native'
-import { LoginPage } from './components/LoginPage/LoginPage'
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
+import reducers from './utils/reducers'
+import LoginPage from './components/LoginPage/LoginPage'
+import UserOrders from './components/UserOrders/UserOrders'
+
+const Stack = createStackNavigator()
+const store = createStore(reducers)
 
 export default function App() {
 
   return (
     <View style={styles.container}>
-      <LoginPage />
-
+      <Provider store={store}>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false
+            }}
+          >
+            <Stack.Screen 
+              name='Screen_LogIn'
+              component={LoginPage}
+              headerMode='none'
+            />
+            <Stack.Screen 
+              name='Screen_UserOrders'
+              component={UserOrders}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </Provider>
       <StatusBar style="auto" />
     </View>
-    
   )
 }
 

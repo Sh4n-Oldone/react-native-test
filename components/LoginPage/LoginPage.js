@@ -1,12 +1,46 @@
 import React, { useState } from 'react'
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
+import { connect, useDispatch } from 'react-redux'
+import { login, logoff, saveUser, dropUser, saveOrders } from '../../utils/actions'
 
-export const LoginPage = () => {
-  const [login, setLogin] = useState('')
-  const [password, setPassword] = useState('')
+function LoginPage({navigation}) {
+  const dispatch = useDispatch()
+
+  const [loginHandler, setLoginHandler] = useState('')
+  const [passwordHandler, setPasswordHandler] = useState('')
+
   const handleEnterClick = () => {
-    console.log(login)
-    console.log(password)
+    // здесь на самом деле метод из Api.js, который обращается к базе
+    // а дальше в then вносятся изменения
+    const data = require('../../utils/clients.json') 
+    const orders = require('../../utils/orders.json')
+    const currentUser = data.find(user => user.login === loginHandler.toLowerCase() && user.password === passwordHandler.toLowerCase())
+    
+    if(currentUser) {
+      const previousOrders = orders.filter(order => order.client_id === currentUser.id)
+        ? orders.filter(order => order.client_id === currentUser.id) 
+        : [{
+          'id': 0,
+          'client_id': currentUser.id,
+          'packageName': 'Нет заказов',
+          'packageCalories': '',
+          'deliveries': [
+              {
+                'id': 0,
+                'date': '',
+                'interval': '',
+                'address': ''
+              }
+            ]
+          }]
+      dispatch(login())
+      dispatch(saveUser(currentUser))
+      dispatch(saveOrders(previousOrders))
+      navigation.navigate('Screen_UserOrders')
+    } else {
+      dispatch(logoff())
+      dispatch(dropUser())
+    }
   }
 
   return (
@@ -16,15 +50,16 @@ export const LoginPage = () => {
       >Добро пожаловать!</Text>
       <TextInput 
         style={styles.inputs}
-        onChangeText={setLogin}
+        onChangeText={setLoginHandler}
         placeholder='Логин'
         placeholderTextColor='#000'
       />
       <TextInput 
         style={styles.inputs}
-        onChangeText={setPassword}
+        onChangeText={setPasswordHandler}
         placeholder='Пароль'
         placeholderTextColor='#000'
+        secureTextEntry
       />
       <TouchableOpacity
         style={styles.button}
@@ -75,3 +110,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   }
 });
+
+const mapStateToProps = (state) => {
+  return { 
+
+   }
+}
+
+export default connect(mapStateToProps)(LoginPage)

@@ -4,3 +4,5 @@
 - React Native
 - Expo
 - react-router-native
+- Redux
+- React-Redux

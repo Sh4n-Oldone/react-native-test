@@ -1,30 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { TouchableOpacity, View, Text, StyleSheet, Animated } from 'react-native'
+import React from 'react'
+import { TouchableOpacity, View, Text, StyleSheet } from 'react-native'
 import { connect, useDispatch } from 'react-redux'
-import { ProgressBar } from './ProgressBar'
+import { ProgressBar } from '../ProgressBar/ProgressBar'
+import { diffDate, getDaysAfter, getDaysBefore, sortClosestDay } from '../../utils/sorters'
+import { currOrder } from '../../utils/actions'
 
 const Order = ({orderObj, packageName, packageCalories, deliveries, navigation}) => {
+  const dispatch = useDispatch()
   // Проблемы:
   // Даты корректно выглядят только на iOS
   // Пока не нашёл минималистичного решения для андроида =(
-
-  // сортировки
-  const diffDate = (oldDate, freshDate) => {
-    // Вернёт разницу между двумя датами
-    const utc1 = Date.UTC(freshDate.getFullYear(), freshDate.getMonth(), freshDate.getDate())
-    const utc2 = Date.UTC(oldDate.getFullYear(), oldDate.getMonth(), oldDate.getDate())
-    const result = Math.floor((utc2 - utc1) / (1000 * 60 * 60 * 24))
-    return result
-  }
-  
-  const getDaysAfter = (arr, date) => arr.filter(day => day - date > 0)
-  const getDaysBefore = (arr, date) => arr.filter(day => day - date < 0)
-  const sortClosestDay = (arr, day) => arr.sort((a, b) => {
-    // Вернёт масссив отсортированных дат
-    const distancea = Math.abs(day - a)
-    const distanceb = Math.abs(day - b)
-    return distancea - distanceb
-  })[0]
 
   // данные
   const today = new Date()
@@ -49,17 +34,15 @@ const Order = ({orderObj, packageName, packageCalories, deliveries, navigation})
     month: !deliveryDatesAfter.length ? '' : nextDeliveryDay.toLocaleString("ru", {month: 'short'}),
     dayOfTheWeek: !deliveryDatesAfter.length ? '' : nextDeliveryDay.toLocaleString("ru", {weekday: 'long'})
   }
-  const prevDeliveryProps = {
-    day: !deliveryDatesBefore.length ? '' : prevDeliveryDay.toLocaleString("ru", {day: 'numeric'}),
-    month: !deliveryDatesBefore.length ? '' : prevDeliveryDay.toLocaleString("ru", {month: 'short'}).slice(0, -1),
-    dayOfTheWeek: !deliveryDatesBefore.length ? '' : prevDeliveryDay.toLocaleString("ru", {weekday: 'long'})
-  }  
+  // const prevDeliveryProps = {
+  //   day: !deliveryDatesBefore.length ? '' : prevDeliveryDay.toLocaleString("ru", {day: 'numeric'}),
+  //   month: !deliveryDatesBefore.length ? '' : prevDeliveryDay.toLocaleString("ru", {month: 'short'}).slice(0, -1),
+  //   dayOfTheWeek: !deliveryDatesBefore.length ? '' : prevDeliveryDay.toLocaleString("ru", {weekday: 'long'})
+  // }  
   
   function handleClick() {
-    // orderObj
+    dispatch(currOrder(orderObj))
 
-
-    
     navigation.navigate('Screen_CurrentOrder')
   }
 

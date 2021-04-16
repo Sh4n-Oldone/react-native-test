@@ -36,11 +36,21 @@ const userStatusReducer = (status = 'logOff', action) => {
   }
 }
 
+const currentOrderReducer = (order = {}, action) => {
+  switch (action.type) {
+    case 'NEW_CURRENT_ORDER':
+      return action.payload
+    default:
+      return order
+  }
+}
+
 
 const reducers = combineReducers({
   userReducer,
   ordersReducer,
-  userStatusReducer
+  userStatusReducer,
+  currentOrderReducer
 })
 
 export default reducers

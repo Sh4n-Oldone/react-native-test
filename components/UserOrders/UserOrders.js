@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, StatusBar } from 'react-native'
-import { connect, useDispatch } from 'react-redux'
-import { login, logoff, saveUser, dropUser } from '../../utils/actions'
+import React from 'react'
+import { View, Text, StyleSheet, ScrollView } from 'react-native'
+import { connect } from 'react-redux'
 import Order from '../Order/Order'
 
 const UserOrders = ({orders, navigation}) => {
-  // console.log(orders)
 
   return (
     <View style={styles.wrapper}>
@@ -23,11 +21,6 @@ const UserOrders = ({orders, navigation}) => {
             navigation={navigation}
           />
           )}
-        {/* <Order 
-          packageName={orders[0].packageName}
-          packageCalories={orders[0].packageCalories}
-          deliveries={orders[0].deliveries}
-        /> */}
       </ScrollView>
     </View>
   )

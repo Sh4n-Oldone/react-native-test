@@ -52,3 +52,10 @@ export const logoff = () => {
     payload: 'logOff'
   }
 }
+
+export const currOrder = value => {
+  return {
+    type: 'NEW_CURRENT_ORDER',
+    payload: value
+  }
+}

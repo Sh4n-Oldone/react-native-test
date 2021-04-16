@@ -4,7 +4,7 @@ import { connect, useDispatch } from 'react-redux'
 import { login, logoff, saveUser, dropUser } from '../../utils/actions'
 import Order from '../Order/Order'
 
-const UserOrders = ({orders}) => {
+const UserOrders = ({orders, navigation}) => {
   // console.log(orders)
 
   return (
@@ -16,9 +16,11 @@ const UserOrders = ({orders}) => {
         {orders.map(item => 
           <Order
             key={item.id}
+            orderObj={item}
             packageName={item.packageName}
             packageCalories={item.packageCalories}
             deliveries={item.deliveries}
+            navigation={navigation}
           />
           )}
         {/* <Order 

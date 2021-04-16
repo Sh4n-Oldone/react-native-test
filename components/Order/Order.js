@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { View, Text, StyleSheet, Animated } from 'react-native'
+import { TouchableOpacity, View, Text, StyleSheet, Animated } from 'react-native'
+import { connect, useDispatch } from 'react-redux'
 import { ProgressBar } from './ProgressBar'
 
-const Order = ({packageName, packageCalories, deliveries}) => {
+const Order = ({orderObj, packageName, packageCalories, deliveries, navigation}) => {
   // Проблемы:
   // Даты корректно выглядят только на iOS
   // Пока не нашёл минималистичного решения для андроида =(
@@ -53,7 +54,15 @@ const Order = ({packageName, packageCalories, deliveries}) => {
     month: !deliveryDatesBefore.length ? '' : prevDeliveryDay.toLocaleString("ru", {month: 'short'}).slice(0, -1),
     dayOfTheWeek: !deliveryDatesBefore.length ? '' : prevDeliveryDay.toLocaleString("ru", {weekday: 'long'})
   }  
-  console.log(deliveries.indexOf(nextDelivery))
+  
+  function handleClick() {
+    // orderObj
+
+
+    
+    navigation.navigate('Screen_CurrentOrder')
+  }
+
   function renameDayOfTheWeek(day) {
     return ['понедельник', 'вторник', 'четверг', 'воскресенье'].includes(day)
     ? day
@@ -67,7 +76,10 @@ const Order = ({packageName, packageCalories, deliveries}) => {
   }
 
   return(
-    <View style={styles.orderBlock}>
+    <TouchableOpacity 
+      style={styles.orderBlock}
+      onPress={handleClick}
+    >
       <View style={styles.topDataBlock}>
         <Text style={styles.topDataBlock__entryDays}>
           {today < new Date(deliveries[deliveries.length-1].date)
@@ -130,7 +142,7 @@ const Order = ({packageName, packageCalories, deliveries}) => {
           </View>
         : <></>
       }
-    </View>
+    </TouchableOpacity>
   )
 }
 
@@ -222,4 +234,12 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Order
+const mapStateToProps = (state) => {
+  return { 
+    isLogged: state.userStatusReducer,
+    user: state.userReducer,
+    orders: state.ordersReducer
+   }
+}
+
+export default connect(mapStateToProps)(Order)

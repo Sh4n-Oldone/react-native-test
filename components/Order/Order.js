@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
-import Animated from 'react-native-reanimated'
+import { View, Text, StyleSheet, Animated } from 'react-native'
 
 const ProgressBar = ({step, steps, height}) => {
   const [width, setWidth] = useState(0)
@@ -28,16 +27,17 @@ const ProgressBar = ({step, steps, height}) => {
       }}
       style={{
         height,
-        backgroundColor: '#1E6FB9',
+        backgroundColor: '#E9E9E9',
         borderRadius: height,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        marginBottom: 7.75
       }}
     >
       <Animated.View 
         style={{
           height,
           width: '100%',
-          backgroundColor: '#FFC0CB',
+          backgroundColor: '#1E6FB9',
           borderRadius: height,
           position: 'absolute',
           left: 0,
@@ -98,7 +98,7 @@ const Order = ({packageName, packageCalories, deliveries}) => {
     month: !deliveryDatesBefore.length ? '' : prevDeliveryDay.toLocaleString("ru", {month: 'short'}).slice(0, -1),
     dayOfTheWeek: !deliveryDatesBefore.length ? '' : prevDeliveryDay.toLocaleString("ru", {weekday: 'long'})
   }  
-
+  console.log(deliveries.indexOf(nextDelivery))
   function renameDayOfTheWeek(day) {
     return ['понедельник', 'вторник', 'четверг', 'воскресенье'].includes(day)
     ? day
@@ -113,8 +113,8 @@ const Order = ({packageName, packageCalories, deliveries}) => {
 
   return(
     <View style={styles.orderBlock}>
-      <View>
-        <Text>
+      <View style={styles.topDataBlock}>
+        <Text style={styles.topDataBlock__entryDays}>
           {today < new Date(deliveries[deliveries.length-1].date)
             ? ['1'].includes(daysAtStart.toString().charAt(daysAtStart.toString().length-1)) && daysAtStart !== 11
               ? `${daysAtStart} день`
@@ -124,49 +124,55 @@ const Order = ({packageName, packageCalories, deliveries}) => {
             : 'Окончен'
           }
         </Text>
-        <View>
-          <Text>{packageName}</Text>
-          <Text>{packageCalories}</Text>
+        <View style={styles.topDataBlock__package}>
+          <Text style={styles.topDataBlock__packageName}>{packageName}</Text>
+          <Text style={styles.topDataBlock__packageCalories}>{packageCalories}</Text>
         </View>
       </View>
 
-      {/* <ProgressBar step={1} steps={10} height={20}/> */}
+      <ProgressBar 
+        step={deliveries.indexOf(nextDelivery) < 0 
+          ? deliveries.length
+          : deliveries.indexOf(nextDelivery)
+      } steps={deliveries.length} height={5.5}
+      />
 
-      <View>
+      <View style={styles.progressDataBlock}>
         <Text>
-          {new Date(deliveries[0].date).toLocaleString("ru", {day: 'numeric', month: 'short'}).slice(0, -1)}
+          {new Date(deliveries[0].date).toLocaleString("ru", {day: 'numeric', month: 'short'})}
         </Text>
         <Text>
           {daysToEnd === 1 ? 'Остался ' : 'Осталось '}{daysToEnd}{['1','2','3','4'].includes(daysToEnd.toString().charAt(daysToEnd.toString().length-1)) && ![11,12,13,14].includes(daysToEnd)
-          ? daysToEnd === 1 
-            ? ' день'
-            : ' дня'
-          : ' дней'
-        }</Text>
+            ? daysToEnd === 1 
+              ? ' день'
+              : ' дня'
+            : ' дней'}
+        </Text>
         <Text>
           {new Date(deliveries[deliveries.length - 1].date).toLocaleString("ru", {day: 'numeric', month: 'short'})}
         </Text>
       </View>
-      <View>
-        <View>
-          <Text>{nextDeliveryProps.month}</Text>
-          <Text>{nextDeliveryProps.day}</Text>
-        </View>
-        <View>
-          <Text>Ближайшая доставка
-            <Text>
-              {
-                nextDeliveryProps.dayOfTheWeek === 'вторник' 
-                  ? ' во ' 
-                  : ' в '
-              }
-              {renameDayOfTheWeek(nextDeliveryProps.dayOfTheWeek)} –
-            </Text>
-          </Text>
-          <Text>{nextDelivery.interval}</Text>
-          <Text>{nextDelivery.address}</Text>
-        </View>
-      </View>
+
+      { today < new Date(deliveries[deliveries.length-1].date) 
+        ? <View style={styles.bottomDataBlock}>
+            <View style={styles.bottomDataBlock__left}>
+              <Text style={styles.bottomDataBlock__left_month}>{nextDeliveryProps.month}</Text>
+              <Text style={styles.bottomDataBlock__left_day}>{nextDeliveryProps.day}</Text>
+            </View>
+            <View style={styles.bottomDataBlock__right}>
+              <Text style={styles.bottomDataBlock__right_text}>Ближайшая доставка</Text>
+              <Text style={styles.bottomDataBlock__right_textWeek}>
+                {nextDeliveryProps.dayOfTheWeek === 'вторник' 
+                  ? 'во ' 
+                  : 'в '}
+                {renameDayOfTheWeek(nextDeliveryProps.dayOfTheWeek)} –
+              </Text>
+              <Text style={styles.bottomDataBlock__right_interval}>{nextDelivery.interval}</Text>
+              <Text style={styles.bottomDataBlock__right_address}>{nextDelivery.address}</Text>
+            </View>
+          </View>
+        : <></>
+      }
     </View>
   )
 }
@@ -176,7 +182,86 @@ const styles = StyleSheet.create({
     backgroundColor: '#E3E3E3',
     borderRadius: 6,
     width: '100%',
-    marginBottom: 15
+    marginBottom: 15,
+    paddingTop: 25,
+    paddingLeft: 17,
+    paddingRight: 17,
+    paddingBottom: 16
+  },
+  topDataBlock: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16
+  },
+  topDataBlock__entryDays: {
+    fontSize: 35,
+    fontWeight: 'bold'
+  },
+  topDataBlock__package: {
+    paddingRight: 22
+  },
+  topDataBlock__packageName: {
+    color: '#B1B1B1',
+    fontSize: 10,
+    fontWeight: 'bold',
+    lineHeight: 16
+  },
+  topDataBlock__packageCalories: {
+    fontSize: 14,
+    fontWeight: 'bold'
+  },
+  progressDataBlock: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  bottomDataBlock: {
+    flexDirection: 'row',
+    marginTop: 23.26
+  },
+  bottomDataBlock__left: {
+    marginRight: 20,
+    backgroundColor: '#1E6FB9',
+    height: 100,
+    width: 58,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 4
+  },
+  bottomDataBlock__left_month: {
+    color: '#fff',
+    fontSize: 11,
+    textTransform: 'capitalize'
+  },
+  bottomDataBlock__left_day: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold'
+  },
+  bottomDataBlock__right: {
+    maxWidth: 203
+  },
+  bottomDataBlock__right_text: {
+    color: '#242424',
+    fontSize: 17,
+    fontWeight: 'bold',
+    marginTop: 8
+  },
+  bottomDataBlock__right_textWeek: {
+    color: '#1E6FB9',
+    fontSize: 17,
+    fontWeight: 'bold',
+    marginBottom: 8.86
+  },
+  bottomDataBlock__right_interval: {
+    color: '#313131',
+    fontSize: 12,
+    fontWeight: '500',
+    marginBottom: 3.32
+  },
+  bottomDataBlock__right_address: {
+    color: '#949494',
+    fontSize: 12
   }
 })
 

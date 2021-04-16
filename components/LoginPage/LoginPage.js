@@ -17,7 +17,7 @@ function LoginPage({navigation}) {
     const currentUser = data.find(user => user.login === loginHandler.toLowerCase() && user.password === passwordHandler.toLowerCase())
     
     if(currentUser) {
-      const previousOrders = orders.filter(order => order.client_id === currentUser.id)
+      const userOrders = orders.filter(order => order.client_id === currentUser.id)
         ? orders.filter(order => order.client_id === currentUser.id) 
         : [{
           'id': 0,
@@ -35,7 +35,7 @@ function LoginPage({navigation}) {
           }]
       dispatch(login())
       dispatch(saveUser(currentUser))
-      dispatch(saveOrders(previousOrders))
+      dispatch(saveOrders(userOrders))
       navigation.navigate('Screen_UserOrders')
     } else {
       dispatch(logoff())

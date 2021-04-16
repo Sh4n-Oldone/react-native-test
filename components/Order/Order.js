@@ -88,7 +88,7 @@ const Order = ({packageName, packageCalories, deliveries}) => {
       <ProgressBar 
         step={deliveries.indexOf(nextDelivery) < 0 
           ? deliveries.length
-          : deliveries.indexOf(nextDelivery)
+          : deliveries.indexOf(prevDelivery) + 1
       } 
       steps={deliveries.length} 
       height={5.5}

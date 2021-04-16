@@ -9,6 +9,7 @@ import reducers from './utils/reducers'
 import LoginPage from './components/LoginPage/LoginPage'
 import UserOrders from './components/UserOrders/UserOrders'
 
+
 const Stack = createStackNavigator()
 const store = createStore(reducers)
 
@@ -32,6 +33,10 @@ export default function App() {
               name='Screen_UserOrders'
               component={UserOrders}
             />
+            {/* <Stack.Screen 
+              name='Screen_CurrentOrder'
+              component={CurrentOrder}
+            /> */}
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>

@@ -1,8 +1,9 @@
 import React from 'react'
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native'
 import { connect, useDispatch } from 'react-redux'
-import { ProgressBar } from '../ProgressBar/ProgressBar'
-import { diffDate, getDaysAfter, getDaysBefore, sortClosestDay } from '../../utils/sorters'
+import { OrderTopBlock } from './OrderTopBlock'
+// import { ProgressBar } from '../ProgressBar/ProgressBar'
+import { getDaysAfter, getDaysBefore, sortClosestDay } from '../../utils/sorters'
 import { currOrder } from '../../utils/actions'
 
 const Order = ({orderObj, packageName, packageCalories, deliveries, navigation}) => {
@@ -13,13 +14,13 @@ const Order = ({orderObj, packageName, packageCalories, deliveries, navigation})
 
   // данные
   const today = new Date()
-  const daysToEnd = deliveries.length > 0 
-    ? diffDate(new Date(deliveries[deliveries.length - 1].date), today) >= 0 
-      ? diffDate(new Date(deliveries[deliveries.length - 1].date), today)
-      : 0
-    : 0
+  // const daysToEnd = deliveries.length > 0 
+  //   ? diffDate(new Date(deliveries[deliveries.length - 1].date), today) >= 0 
+  //     ? diffDate(new Date(deliveries[deliveries.length - 1].date), today)
+  //     : 0
+  //   : 0
 
-  const daysAtStart = Math.abs(diffDate(new Date(deliveries[0].date), today))
+  // const daysAtStart = Math.abs(diffDate(new Date(deliveries[0].date), today))
 
   const deliveryDates = deliveries.map(item => new Date(item.date))
   const deliveryDatesAfter = getDaysAfter(deliveryDates, today)
@@ -63,47 +64,13 @@ const Order = ({orderObj, packageName, packageCalories, deliveries, navigation})
       style={styles.orderBlock}
       onPress={handleClick}
     >
-      <View style={styles.topDataBlock}>
-        <Text style={styles.topDataBlock__entryDays}>
-          {today < new Date(deliveries[deliveries.length-1].date)
-            ? ['1'].includes(daysAtStart.toString().charAt(daysAtStart.toString().length-1)) && daysAtStart !== 11
-              ? `${daysAtStart} день`
-              : ['2','3','4'].includes(daysAtStart.toString().charAt(daysAtStart.toString().length-1))
-                ? `${daysAtStart} дня`
-                : `${daysAtStart} дней`
-            : 'Окончен'
-          }
-        </Text>
-        <View style={styles.topDataBlock__package}>
-          <Text style={styles.topDataBlock__packageName}>{packageName}</Text>
-          <Text style={styles.topDataBlock__packageCalories}>{packageCalories}</Text>
-        </View>
-      </View>
-
-      <ProgressBar 
-        step={deliveries.indexOf(nextDelivery) < 0 
-          ? deliveries.length
-          : deliveries.indexOf(prevDelivery) + 1
-      } 
-      steps={deliveries.length} 
-      height={5.5}
+      <OrderTopBlock 
+        deliveries={deliveries}
+        packageName={packageName}
+        packageCalories={packageCalories}
+        nextDelivery={nextDelivery}
+        prevDelivery={prevDelivery}
       />
-
-      <View style={styles.progressDataBlock}>
-        <Text>
-          {new Date(deliveries[0].date).toLocaleString("ru", {day: 'numeric', month: 'short'})}
-        </Text>
-        <Text>
-          {daysToEnd === 1 ? 'Остался ' : 'Осталось '}{daysToEnd}{['1','2','3','4'].includes(daysToEnd.toString().charAt(daysToEnd.toString().length-1)) && ![11,12,13,14].includes(daysToEnd)
-            ? daysToEnd === 1 
-              ? ' день'
-              : ' дня'
-            : ' дней'}
-        </Text>
-        <Text>
-          {new Date(deliveries[deliveries.length - 1].date).toLocaleString("ru", {day: 'numeric', month: 'short'})}
-        </Text>
-      </View>
 
       { today < new Date(deliveries[deliveries.length-1].date) 
         ? <View style={styles.bottomDataBlock}>
@@ -139,33 +106,6 @@ const styles = StyleSheet.create({
     paddingLeft: 17,
     paddingRight: 17,
     paddingBottom: 16
-  },
-  topDataBlock: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16
-  },
-  topDataBlock__entryDays: {
-    fontSize: 35,
-    fontWeight: 'bold'
-  },
-  topDataBlock__package: {
-    paddingRight: 22
-  },
-  topDataBlock__packageName: {
-    color: '#B1B1B1',
-    fontSize: 10,
-    fontWeight: 'bold',
-    lineHeight: 16
-  },
-  topDataBlock__packageCalories: {
-    fontSize: 14,
-    fontWeight: 'bold'
-  },
-  progressDataBlock: {
-    flexDirection: 'row',
-    justifyContent: 'space-between'
   },
   bottomDataBlock: {
     flexDirection: 'row',

@@ -49,6 +49,7 @@ const CurrentOrder = ({ navigation, orderData }) => {
   }
   function handleDelete() {
     dispatch(removeOrder(orderData))
+    navigation.navigate('Screen_UserOrders')
   }
 
   return (

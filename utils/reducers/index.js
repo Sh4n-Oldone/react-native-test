@@ -19,7 +19,7 @@ const ordersReducer = (orders = [], action) => {
       // удаляет элемент из массива
       return orders.filter(item => item !== action.payload)
     case 'ADD_NEW_ORDER_TO_ORDERS_DATA':
-      return orders.append(action.payload)
+      return [...orders, action.payload]
     default:
       return orders
   }

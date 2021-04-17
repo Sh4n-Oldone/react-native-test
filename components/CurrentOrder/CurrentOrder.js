@@ -4,8 +4,11 @@ import { connect, useDispatch } from 'react-redux'
 import { ProgressBar } from '../ProgressBar/ProgressBar'
 import { OneDelivery } from '../OneDelivery/OneDelivery'
 import { diffDate, getDaysAfter, getDaysBefore, sortClosestDay } from '../../utils/sorters'
+import { addOrder, removeOrder } from '../../utils/actions'
 
 const CurrentOrder = ({ navigation, orderData }) => {
+  const dispatch = useDispatch()
+
   const packageName = orderData.packageName
   const packageCalories = orderData.packageCalories
   const deliveries = orderData.deliveries
@@ -38,10 +41,14 @@ const CurrentOrder = ({ navigation, orderData }) => {
     navigation.navigate('Screen_UserOrders')
   }
   function handleDuplicate() {
-
+    // тут должен быть очередной фетч-пост, который вернёт обновлённый список
+    // но пока я ограничусь сменой id в существующей копии
+    const newOrder = {...orderData}
+    newOrder.id = Math.floor(Math.random() * 100)
+    dispatch(addOrder(newOrder))
   }
   function handleDelete() {
-
+    dispatch(removeOrder(orderData))
   }
 
   return (

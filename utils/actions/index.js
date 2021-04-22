@@ -1,61 +1,65 @@
+import {
+  newUserData,
+  removeUserData,
+  newOrders,
+  removeFromOrders,
+  appendOrders,
+  signIn,
+  logOff,
+  newCurrentOrder
+} from '../actionTypes'
+
 export const saveUser = value => {
   return {
-    type: 'NEW_USER_DATA',
+    type: newUserData,
     payload: value
   }
 }
 
 export const dropUser = () => {
   return {
-    type: 'DROP_USER_DATA'
+    type: removeUserData
   }
 }
 
 export const saveOrders = value => {
   return {
-    type: 'NEW_ORDERS_DATA',
-    payload: value
-  }
-}
-
-export const appendOrders = value => {
-  return {
-    type: 'APPENDS_ORDERS_DATA',
+    type: newOrders,
     payload: value
   }
 }
 
 export const removeOrder = value => {
   return {
-    type: 'REMOVE_FROM_ORDERS_DATA',
+    type: removeFromOrders,
     payload: value
   }
 }
 
 export const addOrder = value => {
   return {
-    type: 'ADD_NEW_ORDER_TO_ORDERS_DATA',
+    type: appendOrders,
     payload: value
   }
 }
 
 export const login = () => {
   return {
-    type: 'USER_LOG_IN',
+    type: signIn,
     payload: 'logIn'
   }
 }
 
 export const logoff = () => {
   return {
-    type: 'USER_LOG_OFF',
+    type: logOff,
     payload: 'logOff'
   }
 }
 
 export const currOrder = value => {
   return {
-    type: 'NEW_CURRENT_ORDER',
+    type: newCurrentOrder,
     payload: value
   }
 }

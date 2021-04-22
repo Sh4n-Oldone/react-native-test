@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, StyleSheet, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
-import Order from '../Order/Order'
+import Order from '../../components/Order/Order'
 
 const UserOrders = ({orders, navigation}) => {
 

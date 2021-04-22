@@ -1,10 +1,20 @@
 import {combineReducers} from 'redux'
+import {
+  newUserData,
+  removeUserData,
+  newOrders,
+  removeFromOrders,
+  appendOrders,
+  signIn,
+  logOff,
+  newCurrentOrder
+} from '../actionTypes'
 
 const userReducer = (user = {}, action) => {
   switch (action.type) {
-    case 'NEW_USER_DATA':
+    case newUserData:
       return action.payload
-    case 'DROP_USER_DATA':
+    case removeUserData:
       return {}
     default:
       return user
@@ -13,12 +23,12 @@ const userReducer = (user = {}, action) => {
 
 const ordersReducer = (orders = [], action) => {
   switch (action.type) {
-    case 'NEW_ORDERS_DATA':
+    case newOrders:
       return action.payload
-    case 'REMOVE_FROM_ORDERS_DATA':
+    case removeFromOrders:
       // удаляет элемент из массива
       return orders.filter(item => item !== action.payload)
-    case 'ADD_NEW_ORDER_TO_ORDERS_DATA':
+    case appendOrders:
       return [...orders, action.payload]
     default:
       return orders
@@ -27,9 +37,9 @@ const ordersReducer = (orders = [], action) => {
 
 const userStatusReducer = (status = 'logOff', action) => {
   switch (action.type) {
-    case 'USER_LOG_IN':
+    case signIn:
       return action.payload
-    case 'USER_LOG_OFF':
+    case logOff:
       return action.payload
     default:
       return status
@@ -38,7 +48,7 @@ const userStatusReducer = (status = 'logOff', action) => {
 
 const currentOrderReducer = (order = {}, action) => {
   switch (action.type) {
-    case 'NEW_CURRENT_ORDER':
+    case newCurrentOrder:
       return action.payload
     default:
       return order

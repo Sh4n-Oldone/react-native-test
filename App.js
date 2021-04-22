@@ -6,9 +6,9 @@ import { StyleSheet, View } from 'react-native'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import reducers from './utils/reducers'
-import LoginPage from './components/LoginPage/LoginPage'
-import UserOrders from './components/UserOrders/UserOrders'
-import CurrentOrder from './components/CurrentOrder/CurrentOrder'
+import LoginPage from './screens/LoginPage/LoginPage'
+import UserOrders from './screens/UserOrders/UserOrders'
+import CurrentOrder from './screens/CurrentOrder/CurrentOrder'
 
 const Stack = createStackNavigator()
 const store = createStore(reducers)

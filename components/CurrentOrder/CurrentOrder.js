@@ -5,6 +5,8 @@ import { OneDelivery } from '../OneDelivery/OneDelivery'
 import { OrderTopBlock } from '../Order/OrderTopBlock'
 import { getDaysAfter, getDaysBefore, sortClosestDay } from '../../utils/sorters'
 import { addOrder, removeOrder } from '../../utils/actions'
+import DeleteImg from './svg/DeleteImg'
+import DuplicateImg from './svg/DuplicateImg'
 
 const CurrentOrder = ({ navigation, orderData }) => {
   const dispatch = useDispatch()
@@ -80,9 +82,7 @@ const CurrentOrder = ({ navigation, orderData }) => {
           <View 
             style={styles.buttonsBlock__imageWrapper}
           >
-            <Image 
-              source={require('../../assets/duplicate.png')}
-            />
+            <DuplicateImg />
           </View>
         </TouchableOpacity>
         <View style={{height: 1, width: '100%', backgroundColor: '#D6D6D6'}}></View>
@@ -94,9 +94,7 @@ const CurrentOrder = ({ navigation, orderData }) => {
           <View 
             style={styles.buttonsBlock__imageWrapper}
           >
-            <Image 
-              source={require('../../assets/delete.png')}
-            />
+            <DeleteImg />
           </View>
         </TouchableOpacity>
       </View>

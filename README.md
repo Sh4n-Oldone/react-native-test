@@ -9,3 +9,5 @@
 - @react-navigation/stack
 - Redux
 - React-Redux
+- Moment.js
+- react-native-svg (expo)

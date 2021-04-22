@@ -1,5 +1,7 @@
 import React from 'react'
-import { View, TouchableOpacity, Text, Image } from 'react-native'
+import { View, TouchableOpacity, Text } from 'react-native'
+import PackageImg from './svg/PackageImg'
+import ArrowImg from './svg/ArrowImg'
 import moment from 'moment'
 import 'moment/locale/ru'
 
@@ -28,13 +30,7 @@ export const OneDelivery = ({date, interval}) => {
           flexDirection: 'row' 
         }}
       >
-        <Image 
-          style={{
-            height: 41, 
-            width: 30
-          }}
-          source={require('../../assets/package.png')}
-        />
+        <PackageImg />
         <Text
           style={{ 
             marginLeft: 11, 
@@ -51,9 +47,7 @@ export const OneDelivery = ({date, interval}) => {
             fontSize: 14
           }}
         >{interval}</Text>
-        <Image 
-          source={require('../../assets/Arrow.png')}
-        />
+        <ArrowImg />
       </View>
     </TouchableOpacity>
   )

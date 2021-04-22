@@ -14,7 +14,7 @@ function LoginPage({navigation}) {
     // а дальше в then вносятся изменения
     const data = require('../../utils/clients.json') 
     const orders = require('../../utils/orders.json')
-    const currentUser = data.find(user => user.login === loginHandler.toLowerCase() && user.password === passwordHandler.toLowerCase())
+    const currentUser = data.find(user => user.login === loginHandler && user.password === passwordHandler)
     
     if(currentUser) {
       const userOrders = orders.filter(order => order.client_id === currentUser.id)

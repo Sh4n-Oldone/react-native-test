@@ -2,6 +2,8 @@ import React from 'react'
 import { View, Text } from 'react-native'
 import { ProgressBar } from '../ProgressBar/ProgressBar'
 import { diffDate } from '../../utils/sorters'
+import moment from 'moment'
+import 'moment/locale/ru'
 
 export const OrderTopBlock = ({deliveries, packageName, packageCalories, nextDelivery, prevDelivery}) => {
   const today = new Date()
@@ -75,7 +77,7 @@ export const OrderTopBlock = ({deliveries, packageName, packageCalories, nextDel
         }}
       >
         <Text>
-          {new Date(deliveries[0].date).toLocaleString("ru", {day: 'numeric', month: 'short'})}
+          {moment(new Date(deliveries[0].date)).locale("ru").format('D MMM').replace('.', '')}
         </Text>
         <Text>
           {daysToEnd === 1 ? 'Остался ' : 'Осталось '}{daysToEnd}{['1','2','3','4'].includes(daysToEnd.toString().charAt(daysToEnd.toString().length-1)) && ![11,12,13,14].includes(daysToEnd)
@@ -85,7 +87,7 @@ export const OrderTopBlock = ({deliveries, packageName, packageCalories, nextDel
             : ' дней'}
         </Text>
         <Text>
-          {new Date(deliveries[deliveries.length - 1].date).toLocaleString("ru", {day: 'numeric', month: 'short'})}
+          {moment(new Date(deliveries[deliveries.length - 1].date)).locale("ru").format('D MMM').replace('.', '')}
         </Text>
       </View>
     </>

@@ -5,6 +5,8 @@ import { OrderTopBlock } from './OrderTopBlock'
 // import { ProgressBar } from '../ProgressBar/ProgressBar'
 import { getDaysAfter, getDaysBefore, sortClosestDay } from '../../utils/sorters'
 import { currOrder } from '../../utils/actions'
+import moment from 'moment'
+import 'moment/locale/ru'
 
 const Order = ({orderObj, packageName, packageCalories, deliveries, navigation}) => {
   const dispatch = useDispatch()
@@ -31,9 +33,10 @@ const Order = ({orderObj, packageName, packageCalories, deliveries, navigation})
   const nextDelivery = !deliveryDatesAfter.length ? '' : deliveries.find(item => item.date === nextDeliveryDay.toISOString().slice(0, 10))
   const prevDelivery = !deliveryDatesBefore.length ? '' : deliveries.find(item => item.date === prevDeliveryDay.toISOString().slice(0, 10))
   const nextDeliveryProps = {
-    day: !deliveryDatesAfter.length ? '' : nextDeliveryDay.toLocaleString("ru", {day: 'numeric'}),
-    month: !deliveryDatesAfter.length ? '' : nextDeliveryDay.toLocaleString("ru", {month: 'short'}),
-    dayOfTheWeek: !deliveryDatesAfter.length ? '' : nextDeliveryDay.toLocaleString("ru", {weekday: 'long'})
+    day: !deliveryDatesAfter.length ? '' : moment(nextDeliveryDay).locale('ru').format('D'),
+    month: !deliveryDatesAfter.length ? '' : moment(nextDeliveryDay).locale('ru').format('MMM').replace('.', ''),
+    dayOfTheWeek: !deliveryDatesAfter.length ? '' : moment(nextDeliveryDay).locale('ru').format('ddd'),
+    fullDayOfTheWeek: !deliveryDatesAfter.length ? '' : moment(nextDeliveryDay).locale('ru').format('dddd')
   }
   // const prevDeliveryProps = {
   //   day: !deliveryDatesBefore.length ? '' : prevDeliveryDay.toLocaleString("ru", {day: 'numeric'}),
@@ -81,10 +84,10 @@ const Order = ({orderObj, packageName, packageCalories, deliveries, navigation})
             <View style={styles.bottomDataBlock__right}>
               <Text style={styles.bottomDataBlock__right_text}>Ближайшая доставка</Text>
               <Text style={styles.bottomDataBlock__right_textWeek}>
-                {nextDeliveryProps.dayOfTheWeek === 'вторник' 
+                {nextDeliveryProps.fullDayOfTheWeek === 'вторник' 
                   ? 'во ' 
                   : 'в '}
-                {renameDayOfTheWeek(nextDeliveryProps.dayOfTheWeek)} –
+                {renameDayOfTheWeek(nextDeliveryProps.fullDayOfTheWeek)} –
               </Text>
               <Text style={styles.bottomDataBlock__right_interval}>{nextDelivery.interval}</Text>
               <Text style={styles.bottomDataBlock__right_address}>{nextDelivery.address}</Text>

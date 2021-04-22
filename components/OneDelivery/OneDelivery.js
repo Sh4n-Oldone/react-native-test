@@ -1,9 +1,10 @@
 import React from 'react'
 import { View, TouchableOpacity, Text, Image } from 'react-native'
+import moment from 'moment'
+import 'moment/locale/ru'
 
 export const OneDelivery = ({date, interval}) => {
-  const arrDate = new Date(date).toLocaleString("ru", { day: 'numeric', month: 'long', weekday: 'long' }).split(', ')
-  const normalizeDate = arrDate[1] + ', ' + arrDate[0]
+  const normalizeDate = moment(new Date(date)).locale('ru').format('D MMMM, dddd')
 
   function handleClick() {
 

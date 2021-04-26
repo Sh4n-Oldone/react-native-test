@@ -3,6 +3,10 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 import { connect, useDispatch } from 'react-redux'
 import { login, logoff, saveUser, dropUser, saveOrders } from '../../utils/actions'
 
+const mapStateToProps = (state) => {
+  return {}
+}
+
 function LoginPage({navigation}) {
   const dispatch = useDispatch()
 
@@ -110,11 +114,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   }
 });
-
-const mapStateToProps = (state) => {
-  return { 
-
-   }
-}
 
 export default connect(mapStateToProps)(LoginPage)

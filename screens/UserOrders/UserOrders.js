@@ -3,6 +3,12 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 import Order from '../../components/Order/Order'
 
+const mapStateToProps = (state) => {
+  return {
+    orders: state.ordersReducer
+  }
+}
+
 const UserOrders = ({orders, navigation}) => {
 
   return (
@@ -52,13 +58,5 @@ const styles = StyleSheet.create({
     fontSize: 20
   }
 })
-
-const mapStateToProps = (state) => {
-  return { 
-    isLogged: state.userStatusReducer,
-    user: state.userReducer,
-    orders: state.ordersReducer
-   }
-}
 
 export default connect(mapStateToProps)(UserOrders)

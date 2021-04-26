@@ -5,8 +5,13 @@ import { OneDelivery } from '../../components/OneDelivery/OneDelivery'
 import { OrderTopBlock } from '../../components/Order/OrderTopBlock'
 import { getDaysAfter, getDaysBefore, sortClosestDay } from '../../utils/sorters'
 import { addOrder, removeOrder } from '../../utils/actions'
-import DeleteImg from './svg/DeleteImg'
-import DuplicateImg from './svg/DuplicateImg'
+import Buttons from './Buttons/Buttons'
+
+const mapStateToProps = (state) => {
+  return { 
+    orderData: state.currentOrderReducer
+   }
+}
 
 const CurrentOrder = ({ navigation, orderData }) => {
   const dispatch = useDispatch()
@@ -17,24 +22,27 @@ const CurrentOrder = ({ navigation, orderData }) => {
 
   const today = new Date()
 
-  const deliveryDates = deliveries.map(item => new Date(item.date))
+  const deliveryDates = deliveries?.map(item => new Date(item.date))
   const deliveryDatesAfter = getDaysAfter(deliveryDates, today)
   const deliveryDatesBefore = getDaysBefore(deliveryDates, today)
 
-  const nextDeliveryDay = !deliveryDatesAfter.length ? '' : sortClosestDay(deliveryDatesAfter, today)
-  const prevDeliveryDay = !deliveryDatesBefore.length ? '' : sortClosestDay(deliveryDatesBefore, today)
-  const nextDelivery = !deliveryDatesAfter.length ? '' : deliveries.find(item => item.date === nextDeliveryDay.toISOString().slice(0, 10))
-  const nextDeliveries = !deliveryDatesAfter.length ? '' : deliveries.filter(item => new Date(item.date) > today)
-  const prevDelivery = !deliveryDatesBefore.length ? '' : deliveries.find(item => item.date === prevDeliveryDay.toISOString().slice(0, 10))
-  // const nextDeliveryProps = {
-  //   day: !deliveryDatesAfter.length ? '' : nextDeliveryDay.toLocaleString("ru", {day: 'numeric'}),
-  //   month: !deliveryDatesAfter.length ? '' : nextDeliveryDay.toLocaleString("ru", {month: 'short'}),
-  //   dayOfTheWeek: !deliveryDatesAfter.length ? '' : nextDeliveryDay.toLocaleString("ru", {weekday: 'long'})
-  // }
+  const nextDeliveryDay = deliveryDatesAfter?.length ? sortClosestDay(deliveryDatesAfter, today) : ''
+  const prevDeliveryDay = deliveryDatesBefore?.length ? sortClosestDay(deliveryDatesBefore, today) : ''
+  const nextDelivery = deliveryDatesAfter?.length ? deliveries.find(item => item.date === nextDeliveryDay.toISOString().slice(0, 10)) : ''
+  const nextDeliveries = deliveryDatesAfter?.length ? deliveries.filter(item => new Date(item.date) > today) : ''
+  const prevDelivery = deliveryDatesBefore?.length ? deliveries.find(item => item.date === prevDeliveryDay.toISOString().slice(0, 10)) : ''
 
   function handleBackClick() {
     navigation.navigate('Screen_UserOrders')
   }
+
+  function deliveriesRender() {
+    if (nextDeliveries) {
+      nextDeliveries.map(item => <OneDelivery key={item.id} date={item.date} interval={item.interval} />)
+    }
+    return <></>
+  }
+
   function handleDuplicate() {
     // тут должен быть очередной фетч-пост, который вернёт обновлённый список
     // но пока я ограничусь сменой id в существующей копии
@@ -69,35 +77,12 @@ const CurrentOrder = ({ navigation, orderData }) => {
         style={styles.title}
       >Доставки</Text>
 
-      { nextDeliveries ? nextDeliveries.map(item => <OneDelivery key={item.id} date={item.date} interval={item.interval} />) : <></>}
+      { deliveriesRender() }
 
-      <View
-        style={styles.buttonsBlock}
-      >
-        <TouchableOpacity
-          style={styles.buttonsBlock__button}
-          onPress={handleDuplicate}
-        >
-          <Text style={styles.buttonsBlock__title}>Дублировать заказ</Text>
-          <View 
-            style={styles.buttonsBlock__imageWrapper}
-          >
-            <DuplicateImg />
-          </View>
-        </TouchableOpacity>
-        <View style={{height: 1, width: '100%', backgroundColor: '#D6D6D6'}}></View>
-        <TouchableOpacity
-          style={styles.buttonsBlock__button}
-          onPress={handleDelete}
-        >
-          <Text style={styles.buttonsBlock__title}>Отменить заказ</Text>
-          <View 
-            style={styles.buttonsBlock__imageWrapper}
-          >
-            <DeleteImg />
-          </View>
-        </TouchableOpacity>
-      </View>
+      <Buttons 
+        handleDuplicate={handleDuplicate} 
+        handleDelete={handleDelete}
+      />
     </View>
   )
 }
@@ -152,11 +137,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   }
 })
-
-const mapStateToProps = (state) => {
-  return { 
-    orderData: state.currentOrderReducer
-   }
-}
 
 export default connect(mapStateToProps)(CurrentOrder)
